@@ -13,7 +13,7 @@ const Navbar = () => {
 
     return (
         <nav className="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b border-slate-800">
-            <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div className="w-[80%] mx-auto  py-4 flex justify-between items-center">
 
 
                 <h1 className="text-2xl font-bold tracking-wide text-cyan-400">
