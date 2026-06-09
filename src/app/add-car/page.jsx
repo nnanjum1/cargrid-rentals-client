@@ -1,9 +1,154 @@
-import React from 'react'
+"use client";
+
+import { useState } from "react";
 
 const AddCarPage = () => {
-    return (
-        <div>AddCarPage</div>
-    )
-}
+    const [loading, setLoading] = useState(false);
 
-export default AddCarPage
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const form = e.target;
+
+        const carData = {
+            name: form.name.value,
+            price: form.price.value,
+            type: form.type.value,
+            image: form.image.value,
+            seat: form.seat.value,
+            location: form.location.value,
+            description: form.description.value,
+            availability: form.availability.value,
+            bookingCount: 0,
+        };
+
+        console.log(carData);
+        setLoading(false);
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-10">
+
+            <div className="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-lg">
+
+                <h1 className="text-3xl font-bold text-center text-cyan-400 mb-8">
+                    Add New Car
+                </h1>
+
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+
+                    <div>
+                        <label className="text-sm text-slate-300">Car Name</label>
+                        <input
+                            name="name"
+                            type="text"
+                            placeholder="Toyota Corolla"
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
+                            required
+                        />
+                    </div>
+
+
+                    <div>
+                        <label className="text-sm text-slate-300">Daily Rent Price</label>
+                        <input
+                            name="price"
+                            type="number"
+                            placeholder="2000"
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
+                            required
+                        />
+                    </div>
+
+
+                    <div>
+                        <label className="text-sm text-slate-300">Car Type</label>
+                        <select
+                            name="type"
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white"
+                        >
+                            <option value="SUV">SUV</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="Hatchback">Hatchback</option>
+                            <option value="Luxury">Luxury</option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label className="text-sm text-slate-300">Seat Capacity</label>
+                        <input
+                            name="seat"
+                            type="number"
+                            placeholder="4"
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white"
+                            required
+                        />
+                    </div>
+
+
+                    <div>
+                        <label className="text-sm text-slate-300">Image URL</label>
+                        <input
+                            name="image"
+                            type="text"
+                            placeholder="https://..."
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-sm text-slate-300">Pickup Location</label>
+                        <input
+                            name="location"
+                            type="text"
+                            placeholder="Sylhet / Dhaka"
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-sm text-slate-300">Availability</label>
+                        <select
+                            name="availability"
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white"
+                        >
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+                        </select>
+                    </div>
+
+
+                    <div className="md:col-span-2">
+                        <label className="text-sm text-slate-300">Description</label>
+                        <textarea
+                            name="description"
+                            rows="3"
+                            placeholder="Write car details..."
+                            className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
+                            required
+                        ></textarea>
+                    </div>
+
+
+                    <div className="md:col-span-2">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-cyan-500 text-slate-900 font-semibold py-3 rounded-lg hover:bg-cyan-400 transition"
+                        >
+                            {loading ? "Adding Car..." : "Add Car"}
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default AddCarPage;
