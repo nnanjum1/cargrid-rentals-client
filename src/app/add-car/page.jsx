@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const AddCarPage = () => {
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
@@ -24,6 +25,18 @@ const AddCarPage = () => {
         };
 
         console.log(carData);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(carData)
+        })
+        const data = await res.json();
+        console.log(data)
+
+        toast.success("Car added successfully!");
+        form.reset();
         setLoading(false);
     };
 
