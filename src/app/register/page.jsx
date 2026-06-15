@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
-    const [error, setError] = useState("");
+    const router = useRouter();
+    const [showPassword, setShowPassword] = useState(false);
 
     const validatePassword = (password) => {
         const hasUpper = /[A-Z]/.test(password);
@@ -18,20 +22,50 @@ const RegisterPage = () => {
         return "";
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const password = e.target.password.value;
-        const msg = validatePassword(password);
+        const formData = new FormData(e.currentTarget)
+        const user = Object.fromEntries(formData.entries())
+        const passwordError = validatePassword(user.password);
 
-        if (msg) {
-            setError(msg);
+        if (passwordError) {
+            toast.error(passwordError);
             return;
         }
 
-        setError("");
+        const { data, error } = await authClient.signUp.email({
+            email: user.email,
+            password: user.password,
+            name: user.name,
+            image: user.image,
+        });
+
+        if (data) {
+            toast.success("Registration successful!");
+            e.target.reset();
+            router.push("/login");
+        }
+
+        if (error) {
+            const msg = (error.message || "").toLowerCase();
+
+            if (msg.includes("exists") || msg.includes("already")) {
+                toast.error("This email is already registered");
+            } else {
+                toast.error(error.message);
+            }
+            return;
+        }
+
 
     };
+
+    // const googleSignIn = async () => {
+    //     const data = await authClient.signIn.social({
+    //         provider: "google",
+    //     });
+    // };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
@@ -50,6 +84,7 @@ const RegisterPage = () => {
                     <div>
                         <label className="text-sm text-slate-300">Name</label>
                         <input
+                            name="name"
                             type="text"
                             placeholder="Enter your name"
                             className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
@@ -61,6 +96,7 @@ const RegisterPage = () => {
                     <div>
                         <label className="text-sm text-slate-300">Email</label>
                         <input
+                            name="email"
                             type="email"
                             placeholder="Enter your email"
                             className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
@@ -70,8 +106,9 @@ const RegisterPage = () => {
 
 
                     <div>
-                        <label className="text-sm text-slate-300">Photo URL</label>
+                        <label className="text-sm text-slate-300">Image URL</label>
                         <input
+                            name="image"
                             type="text"
                             placeholder="Profile image link"
                             className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
@@ -80,21 +117,24 @@ const RegisterPage = () => {
                     </div>
 
 
-                    <div>
+                    <div className="relative">
                         <label className="text-sm text-slate-300">Password</label>
                         <input
                             name="password"
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="Enter password"
                             className="w-full mt-1 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
                             required
                         />
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 translate-y-1/5 cursor-pointer text-gray-400"
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
                     </div>
 
 
-                    {error && (
-                        <p className="text-red-400 text-sm">{error}</p>
-                    )}
 
 
                     <button
