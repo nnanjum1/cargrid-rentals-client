@@ -8,14 +8,26 @@ import { toast } from "react-toastify";
 const CarDetailsPage = () => {
     const { id } = useParams();
     const { data: session } = authClient.useSession();
+    const user = session?.user
+
     const [car, setCar] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
-
+    const [bookingDate, setBookingDate] = useState("");
+    const [dateError, setDateError] = useState("");
+    const [existingBookings, setExistingBookings] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [driverNeeded, setDriverNeeded] = useState("No");
     const [note, setNote] = useState("");
+
+    const getToday = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
 
     useEffect(() => {
         const fetchCar = async () => {
@@ -39,25 +51,63 @@ const CarDetailsPage = () => {
     }, [id]);
 
 
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/bookings/${id}`
+                );
+
+                const data = await res.json();
+                setExistingBookings(data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        if (id) fetchBookings();
+    }, [id]);
+
+    const isDateBooked = (date) => {
+        return existingBookings.includes(date);
+    };
+
+
+
+
     const handleBooking = async () => {
-        if (!session) {
-            toast.error("Please login first");
+        const bookingData = {
+            carId: id,
+            userEmail: user.email,
+            driverNeeded,
+            note,
+            bookingDate,
+            price: car.price,
+        };
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(bookingData),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            toast.error(data.message || "Booking failed");
             return;
         }
 
-        const bookingData = {
-            carId: id,
-            userEmail: session.user.email,
-            driverNeeded,
-            note,
-        };
+        toast.success("Booking Done");
 
-        console.log("Booking Data:", bookingData);
+        setCar((prev) => ({
+            ...prev,
+            bookingCount: (prev.bookingCount || 0) + 1,
+        }));
 
-        toast.success("Booking request sent!");
         setOpenModal(false);
-        setDriverNeeded("No");
-        setNote("");
     };
 
     if (loading) {
@@ -129,14 +179,20 @@ const CarDetailsPage = () => {
                     </div>
 
                     <button
-                        onClick={() => setOpenModal(true)}
+                        onClick={() => {
+                            if (!session) {
+                                toast.error("Please login first");
+                                return;
+                            }
+                            setOpenModal(true);
+                        }}
                         disabled={car.availability !== "Available"}
                         className={`w-full mt-4 py-3 rounded-lg font-semibold transition ${car.availability === "Available"
                             ? "bg-cyan-500 text-black hover:bg-cyan-400"
                             : "bg-gray-700 text-gray-300 cursor-not-allowed"
                             }`}
                     >
-                        Book Now
+                        Book This Car
                     </button>
 
 
@@ -147,9 +203,8 @@ const CarDetailsPage = () => {
                 <div className="fixed inset-0 bg-black/70 flex items-center justify-center">
                     <div className="bg-slate-900 p-6 rounded-xl w-[90%] max-w-md">
 
-                        <h2 className="text-xl font-bold mb-4 text-cyan-400">
-                            Book This Car
-                        </h2>
+
+
 
                         <label className="text-sm">Driver Needed</label>
                         <select
@@ -160,6 +215,31 @@ const CarDetailsPage = () => {
                             <option value="No">No</option>
                             <option value="Yes">Yes</option>
                         </select>
+
+
+                        <label className="text-sm">Booking Date</label>
+                        <input
+                            type="date"
+                            min={getToday()}
+                            value={bookingDate}
+                            onChange={(e) => {
+                                const selectedDate = e.target.value;
+                                setBookingDate(selectedDate);
+
+                                if (isDateBooked(selectedDate)) {
+                                    setDateError("❌ This car is already booked on this date");
+                                } else {
+                                    setDateError("");
+                                }
+                            }}
+                            className="w-full mt-1 mb-1 p-2 bg-slate-800 rounded"
+                        />
+
+                        {dateError && (
+                            <p className="text-red-400 text-sm mb-3">
+                                {dateError}
+                            </p>
+                        )}
 
 
                         <label className="text-sm">Special Note</label>
@@ -182,7 +262,8 @@ const CarDetailsPage = () => {
 
                             <button
                                 onClick={handleBooking}
-                                className="w-1/2 bg-cyan-500 text-black py-2 rounded font-semibold"
+                                disabled={!!dateError || !bookingDate}
+                                className="w-1/2 bg-cyan-500 text-black py-2 rounded font-semibold disabled:opacity-50"
                             >
                                 Book Now
                             </button>
