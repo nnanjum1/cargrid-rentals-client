@@ -48,13 +48,9 @@ const RegisterPage = () => {
         }
 
         if (error) {
-            const msg = (error.message || "").toLowerCase();
 
-            if (msg.includes("exists") || msg.includes("already")) {
-                toast.error("This email is already registered");
-            } else {
-                toast.error(error.message);
-            }
+            toast.error(error.message);
+
             return;
         }
 
