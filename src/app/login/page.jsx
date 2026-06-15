@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-toastify';
 
 const LoginPage = () => {
@@ -40,6 +41,12 @@ const LoginPage = () => {
         }
 
 
+    };
+
+    const googleSignIn = async () => {
+        await authClient.signIn.social({
+            provider: "google",
+        });
     };
 
     return (
@@ -103,8 +110,8 @@ const LoginPage = () => {
                 </div>
 
 
-                <button className="w-full flex items-center justify-center gap-3 border border-slate-700 py-3 rounded-lg hover:bg-slate-800 transition text-white">
-                    <FaGoogle className="text-red-400" />
+                <button onClick={googleSignIn} className="w-full flex items-center justify-center gap-3 border border-slate-700 py-3 rounded-lg hover:bg-slate-800 transition text-white">
+                    <FcGoogle className="text-red-400" />
                     Sign in with Google
                 </button>
 

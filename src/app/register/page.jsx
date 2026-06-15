@@ -6,6 +6,7 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
 
 const RegisterPage = () => {
     const router = useRouter();
@@ -57,11 +58,11 @@ const RegisterPage = () => {
 
     };
 
-    // const googleSignIn = async () => {
-    //     const data = await authClient.signIn.social({
-    //         provider: "google",
-    //     });
-    // };
+    const googleSignIn = async () => {
+        await authClient.signIn.social({
+            provider: "google",
+        });
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
@@ -149,9 +150,9 @@ const RegisterPage = () => {
                 </div>
 
 
-                <button className="w-full flex items-center justify-center gap-3 border border-slate-700 py-3 rounded-lg hover:bg-slate-800 transition text-white">
-                    <FaGoogle className="text-red-400" />
-                    Sign up with Google
+                <button onClick={googleSignIn} className="w-full flex items-center justify-center gap-3 border border-slate-700 py-3 rounded-lg hover:bg-slate-800 transition text-white">
+                    <FcGoogle className="text-red-400" />
+                    Sign in with Google
                 </button>
 
                 <p className="text-center text-sm text-slate-400 mt-6">
