@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const MyCars = () => {
     const { data: session, isPending } = authClient.useSession();
@@ -117,14 +118,11 @@ const MyCars = () => {
                                     </p>
 
                                     <div className="flex gap-3 mt-4">
-                                        <button
-                                            className="flex-1 bg-yellow-500 text-black py-2 rounded-lg font-semibold hover:bg-yellow-400"
-                                            onClick={() =>
-                                                toast.info("Edit feature coming soon")
-                                            }
-                                        >
-                                            Edit
-                                        </button>
+                                        <Link href={`/edit-car/${car._id}`} className="flex-1">
+                                            <button className="w-full bg-yellow-500 text-black py-2 rounded-lg font-semibold hover:bg-yellow-400">
+                                                Edit
+                                            </button>
+                                        </Link>
 
                                         <button
                                             className="flex-1 bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-400"
