@@ -1,9 +1,14 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 const AddCarPage = () => {
+    const { data: session, isPending } = authClient.useSession();
+
+
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -22,6 +27,10 @@ const AddCarPage = () => {
             description: form.description.value,
             availability: form.availability.value,
             bookingCount: 0,
+
+            addedBy: session.user.email,
+            addedByName: session.user.name,
+            addedAt: new Date(),
         };
 
         console.log(carData);
@@ -39,6 +48,28 @@ const AddCarPage = () => {
         form.reset();
         setLoading(false);
     };
+
+
+    if (!session) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
+                <h1 className="text-3xl font-bold text-cyan-400 mb-4">
+                    Add New Car
+                </h1>
+
+                <p className="text-slate-400 mb-6">
+                    Please login to add a car.
+                </p>
+
+                <Link
+                    href="/login"
+                    className="px-6 py-3 bg-cyan-500 text-black rounded-lg font-semibold"
+                >
+                    Login
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-10">
