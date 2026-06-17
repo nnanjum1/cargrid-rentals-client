@@ -78,6 +78,8 @@ const CarDetailsPage = () => {
     const handleBooking = async () => {
         const bookingData = {
             carId: id,
+            name: car.name,
+            image: car.image,
             userEmail: user.email,
             driverNeeded,
             note,
@@ -174,7 +176,7 @@ const CarDetailsPage = () => {
                     </div>
 
                     <div className="my-6  text-2xl font-bold text-cyan-400">
-                        ${car.price}{" "}
+                        BDT {car.price}{" "}
                         <span className="text-sm text-slate-400">/day</span>
                     </div>
 
