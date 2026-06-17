@@ -8,7 +8,8 @@ const MyCars = () => {
     const { data: session, isPending } = authClient.useSession();
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [deleteId, setDeleteId] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     // fetch user's cars
     useEffect(() => {
         if (!session?.user?.email) return;
@@ -31,14 +32,10 @@ const MyCars = () => {
         fetchCars();
     }, [session]);
 
-    // delete car
-    const handleDelete = async (id) => {
-        const confirm = window.confirm("Are you sure to delete this car?");
-        if (!confirm) return;
-
+    const handleDelete = async () => {
         try {
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/cars/${id}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/cars/${deleteId}`,
                 {
                     method: "DELETE",
                 }
@@ -53,8 +50,12 @@ const MyCars = () => {
 
             toast.success("Car deleted");
 
-            // remove from UI
-            setCars((prev) => prev.filter((car) => car._id !== id));
+            setCars((prev) =>
+                prev.filter((car) => car._id !== deleteId)
+            );
+
+            setShowDeleteModal(false);
+            setDeleteId(null);
         } catch (err) {
             toast.error("Something went wrong");
         }
@@ -127,9 +128,10 @@ const MyCars = () => {
 
                                         <button
                                             className="flex-1 bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-400"
-                                            onClick={() =>
-                                                handleDelete(car._id)
-                                            }
+                                            onClick={() => {
+                                                setDeleteId(car._id);
+                                                setShowDeleteModal(true);
+                                            }}
                                         >
                                             Delete
                                         </button>
@@ -140,7 +142,43 @@ const MyCars = () => {
                     </div>
                 )}
             </div>
+
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+                    <div className="bg-slate-900 p-6 rounded-xl w-[90%] max-w-md border border-slate-700">
+
+                        <h2 className="text-xl font-bold text-red-400 mb-3">
+                            Delete Car
+                        </h2>
+
+                        <p className="text-slate-300 mb-6">
+                            Are you sure you want to delete this car? This action cannot be undone.
+                        </p>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowDeleteModal(false);
+                                    setDeleteId(null);
+                                }}
+                                className="w-1/2 bg-gray-700 py-2 rounded-lg"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={handleDelete}
+                                className="w-1/2 bg-red-500 py-2 rounded-lg font-semibold hover:bg-red-400"
+                            >
+                                Yes
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
         </div>
+
     );
 };
 
