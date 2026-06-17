@@ -11,14 +11,20 @@ const MyCars = () => {
     const [loading, setLoading] = useState(true);
     const [deleteId, setDeleteId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    // fetch user's cars
     useEffect(() => {
         if (!session?.user?.email) return;
 
         const fetchCars = async () => {
             try {
+                const { data: tokenData } = await authClient.token();
+
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/my-cars?email=${session.user.email}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/my-cars`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${tokenData?.token}`,
+                        },
+                    }
                 );
 
                 const data = await res.json();
@@ -35,10 +41,15 @@ const MyCars = () => {
 
     const handleDelete = async () => {
         try {
+            const { data: tokenData } = await authClient.token();
+
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/cars/${deleteId}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${tokenData?.token}`,
+                    },
                 }
             );
 

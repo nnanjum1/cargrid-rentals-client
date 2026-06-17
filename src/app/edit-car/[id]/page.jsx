@@ -5,12 +5,15 @@ import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 
-const EditCarPage = () => {
+
+const EditCarPage = async () => {
     const { id } = useParams();
     const router = useRouter();
 
     const { data: session, isPending } = authClient.useSession();
     const user = session?.user;
+
+
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -67,6 +70,8 @@ const EditCarPage = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         setSaving(true);
+        const { data: tokenData } = await authClient.token()
+
 
         try {
             const res = await fetch(
@@ -75,6 +80,7 @@ const EditCarPage = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        'authorization': `Bearer ${tokenData?.token}`
                     },
                     body: JSON.stringify({
                         ...form,
