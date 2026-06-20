@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🚗 CarGrid Rentals
 
-## Getting Started
 
-First, run the development server:
+## 📌 About the Project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+CarGrid Rentals is a simple and user-friendly car booking web application where users can explore available cars, view details, and book them for specific dates. The platform also allows users to manage their added cars and bookings in an easy way.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🌟 Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 🔍 Browse and explore different cars with search and filter options  
+- 🚗 View detailed information for each car including price, type, and availability  
+- 📅 Book cars for specific dates with driver option and special notes  
+- 👤 User authentication system for secure login and booking management  
+- 🧾 Manage your bookings and see booking list in one place  
+- 🛠️ Add, edit, and delete your own listed cars (for registered users)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🔓 Pages Accessible Without Login
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The following pages can be accessed without logging in:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Home Page  
+- Explore Cars Page  
+- Car Details Page  
 
-## Deploy on Vercel
+However, to book a car or access personal dashboard features, users must log in first.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔐 Pages That Require Login
+
+- My Bookings Page  
+- My Added Cars Page  
+- Add Car Page  
+- Edit Car Page  
+
+---
+
+## 🛠️ Tech Stack
+
+- Next.js (Frontend)
+- Node.js + Express (Backend)
+- MongoDB (Database)
+- JWT Authentication
+- Vercel Deployment
+
+---
+
+## 🎯 Purpose of the Project
+
+This project was built to practice full-stack web development, including authentication, API handling, database operations, and deployment using modern tools.
+
+---
+
+## 🚀 Live Experience
+
+Try the live app here:  
+👉 https://cargrid-rentals-client.vercel.app
