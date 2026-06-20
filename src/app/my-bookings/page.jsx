@@ -12,12 +12,32 @@ const MyBookingsPage = () => {
         if (!session?.user?.email) return;
 
         const fetchBookings = async () => {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/bookings?email=${session.user.email}`
-            );
+            try {
+                const { data: tokenData } = await authClient.token();
 
-            const data = await res.json();
-            setBookings(data);
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/bookings?email=${session.user.email}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${tokenData?.token}`
+                        }
+                    }
+                );
+
+                const data = await res.json();
+
+                if (!Array.isArray(data)) {
+                    console.error("Invalid response:", data);
+                    setBookings([]);
+                    return;
+                }
+
+                setBookings(data);
+
+            } catch (err) {
+                console.error(err);
+                setBookings([]);
+            }
         };
 
         fetchBookings();
