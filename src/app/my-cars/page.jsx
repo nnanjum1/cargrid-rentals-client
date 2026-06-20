@@ -75,8 +75,11 @@ const MyCars = () => {
 
     if (isPending || loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-                Loading...
+            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
+
+                <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+
+                <p className="mt-4 text-slate-400">Loading your cars...</p>
             </div>
         );
     }
