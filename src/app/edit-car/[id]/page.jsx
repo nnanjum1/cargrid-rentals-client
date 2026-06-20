@@ -6,7 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 
 
-const EditCarPage = async () => {
+const EditCarPage = () => {
     const { id } = useParams();
     const router = useRouter();
 
